@@ -1,0 +1,31 @@
+# dependencies
+/node_modules
+/.pnpm-store
+
+# next.js build output
+/.next/
+/out/
+
+# environment & secrets
+.env
+.env.*
+!.env.example
+
+# databases & logs
+*.db
+*.db-journal
+*.log
+dev.db
+dev.db-journal
+
+# temporary generator scripts
+scripts/backfill_git.js
+scripts/backfill_git.mjs
+scripts/backfill_git_v2.mjs
+scripts/test*.mjs
+
+# OS & IDE metadata
+.DS_Store
+*.pem
+.idea/
+.vscode/
