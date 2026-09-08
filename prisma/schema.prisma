@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PeriodOverride {
+  id              String   @id @default(uuid())
+  date            DateTime @db.Date
+  periodIndex     Int
+  status          String   // 'NORMAL' | 'CANCELED' | 'SWAPPED' | 'FREE'
+  overrideSubject String?
+  overrideFaculty String?
+  overrideVenue   String?
+  note            String?
+  createdAt       DateTime @default(now())
+
+  @@unique([date, periodIndex])
+  @@index([date])
+}
