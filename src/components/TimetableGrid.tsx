@@ -37,11 +37,11 @@ export function TimetableGrid({
     .sort((a, b) => parseHHMMToMinutes(a.startTime) - parseHHMMToMinutes(b.startTime));
 
   return (
-    <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800/90 rounded-2xl p-4 shadow-xl dark:shadow-2xl space-y-4 transition-colors duration-200">
+    <div className="bg-white border border-slate-200 dark:bg-zinc-950 dark:border-zinc-800/90 rounded-2xl p-4 shadow-sm dark:shadow-2xl space-y-4 transition-colors duration-200">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-900 pb-3">
+      <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-900 pb-3">
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <Calendar className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
           <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 uppercase font-mono tracking-wide">
             WEEKLY TIMETABLE
           </h3>
@@ -49,7 +49,7 @@ export function TimetableGrid({
         {onClose && (
           <button
             onClick={onClose}
-            className="p-1 rounded bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800"
+            className="p-1 rounded bg-slate-100 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 border border-slate-200 dark:border-zinc-800"
           >
             <X className="w-4 h-4" />
           </button>
@@ -57,7 +57,7 @@ export function TimetableGrid({
       </div>
 
       {/* Day Selector Pills */}
-      <div className="grid grid-cols-5 gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-900/90 rounded-xl border border-zinc-200 dark:border-zinc-800/80">
+      <div className="grid grid-cols-5 gap-1.5 p-1 bg-slate-100 dark:bg-zinc-900/90 rounded-xl border border-slate-200 dark:border-zinc-800/80">
         {DAYS.map((d) => {
           const isSelected = selectedDay === d.key;
           const isToday = currentDay === d.key;
@@ -68,8 +68,8 @@ export function TimetableGrid({
               onClick={() => setSelectedDay(d.key)}
               className={`py-2 px-1 rounded-lg text-xs font-mono font-bold transition-all relative ${
                 isSelected
-                  ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-700 shadow-sm dark:shadow-md'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/40'
+                  ? 'bg-white text-zinc-950 shadow-sm border border-slate-200 dark:bg-zinc-800 dark:text-zinc-100 dark:border-zinc-700 dark:shadow-md'
+                  : 'text-zinc-600 hover:bg-slate-200/60 dark:text-zinc-400 dark:hover:text-zinc-200 dark:hover:bg-zinc-800/40'
               }`}
             >
               {d.label}
