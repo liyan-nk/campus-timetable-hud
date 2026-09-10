@@ -97,7 +97,7 @@ function MobileHUDContent() {
   const dayOfWeek = getDayOfWeekString(currentDate);
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col pb-safe selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-slate-100 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 flex flex-col pb-safe selection:bg-emerald-500/30 transition-colors duration-200">
       {/* Top Bar Header */}
       <Header
         simulatedDate={currentDate}
@@ -130,18 +130,18 @@ function MobileHUDContent() {
         <div className="pt-2">
           <button
             onClick={() => setShowGridModal((prev) => !prev)}
-            className="w-full bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl p-3.5 flex items-center justify-between text-xs font-mono font-bold text-zinc-300 transition-all shadow-md"
+            className="w-full bg-white hover:bg-slate-50 dark:bg-zinc-900 dark:hover:bg-zinc-800/90 border border-slate-300 dark:border-zinc-800 dark:hover:border-zinc-700 rounded-xl p-3.5 flex items-center justify-between text-xs font-mono font-bold text-slate-800 dark:text-zinc-200 transition-all shadow-sm dark:shadow-md"
           >
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-emerald-400" />
-              <span className="uppercase tracking-wide">
+              <Calendar className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
+              <span className="uppercase tracking-wide font-bold">
                 {showGridModal ? 'HIDE WEEKLY TIMETABLE' : 'VIEW FULL WEEK TIMETABLE'}
               </span>
             </div>
             {showGridModal ? (
-              <ChevronUp className="w-4 h-4 text-zinc-400" />
+              <ChevronUp className="w-4 h-4 text-slate-500 dark:text-zinc-400" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-zinc-400" />
+              <ChevronDown className="w-4 h-4 text-slate-500 dark:text-zinc-400" />
             )}
           </button>
         </div>
@@ -159,9 +159,9 @@ function MobileHUDContent() {
         )}
 
         {/* Footer Meta */}
-        <footer className="pt-6 pb-4 text-center border-t border-zinc-900/80">
-          <p className="text-[11px] font-mono text-zinc-400 flex items-center justify-center gap-1.5">
-            <Layers className="w-3 h-3 text-emerald-500" />
+        <footer className="pt-6 pb-4 text-center border-t border-slate-200 dark:border-zinc-900/80">
+          <p className="text-[11px] font-mono text-slate-500 dark:text-zinc-500 flex items-center justify-center gap-1.5">
+            <Layers className="w-3 h-3 text-emerald-600 dark:text-emerald-500" />
             <span>CAMPUS HUD PWA • REAL-TIME TIME TABLE RESOLVER</span>
           </p>
         </footer>
@@ -176,7 +176,7 @@ function MobileHUDContent() {
 export default function MobileHUDPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#09090b] text-zinc-400 flex items-center justify-center font-mono text-xs">
+      <div className="min-h-screen bg-slate-100 dark:bg-[#09090b] text-slate-500 dark:text-zinc-400 flex items-center justify-center font-mono text-xs">
         LOADING CAMPUS HUD...
       </div>
     }>
