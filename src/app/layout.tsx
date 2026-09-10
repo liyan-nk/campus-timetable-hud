@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark bg-[#09090b]" suppressHydrationWarning>
+    <html lang="en" className="dark bg-slate-100 dark:bg-[#09090b]" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,7 +53,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-slate-50 dark:bg-[#09090b] text-zinc-950 dark:text-zinc-100 antialiased selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-200 transition-colors duration-200">
+      <body className="min-h-screen bg-slate-100 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 antialiased selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-200 transition-colors duration-200">
         <ThemeProvider>
           {children}
         </ThemeProvider>
