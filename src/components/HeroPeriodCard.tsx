@@ -72,11 +72,11 @@ export function HeroPeriodCard({ timeState }: HeroPeriodCardProps) {
     badgeLabel = 'BEFORE HOURS';
     progressColor = 'bg-indigo-500';
   } else if (status === 'COLLEGE_OVER' || status === 'WEEKEND') {
-    cardBorder = 'border-zinc-200 dark:border-zinc-800/80';
-    countdownColor = 'text-zinc-500';
-    badgeBg = 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700/60';
+    cardBorder = 'border-slate-200 dark:border-zinc-800/80';
+    countdownColor = 'text-slate-500 dark:text-zinc-500';
+    badgeBg = 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-zinc-800/80 dark:text-zinc-300 dark:border-zinc-700/60';
     badgeLabel = status === 'WEEKEND' ? 'WEEKEND' : 'CLASSES DONE';
-    progressColor = 'bg-zinc-400 dark:bg-zinc-700';
+    progressColor = 'bg-slate-300 dark:bg-zinc-700';
   }
 
   const targetPeriod: MergedPeriod | null = currentPeriod || nextPeriod;
@@ -89,9 +89,9 @@ export function HeroPeriodCard({ timeState }: HeroPeriodCardProps) {
 
   return (
     <div
-      className={`relative overflow-hidden bg-white dark:bg-zinc-950/90 rounded-2xl border ${cardBorder} p-5 shadow-sm dark:shadow-2xl transition-all duration-300`}
+      className={`relative overflow-hidden bg-white border-slate-200 dark:bg-zinc-950/90 rounded-2xl border ${cardBorder} p-5 shadow-sm dark:shadow-2xl transition-all duration-300`}
     >
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-200 dark:via-white/10 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
 
       {/* Header Bar inside card */}
       <div className="flex items-center justify-between gap-2 mb-4">
@@ -103,7 +103,7 @@ export function HeroPeriodCard({ timeState }: HeroPeriodCardProps) {
         </span>
 
         {targetPeriod && (
-          <span className="text-xs font-mono text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded border border-zinc-200 dark:border-zinc-800">
+          <span className="text-xs font-mono text-slate-600 dark:text-zinc-400 bg-slate-100 dark:bg-zinc-900 px-2 py-1 rounded border border-slate-200 dark:border-zinc-800">
             {formatRangeTo12Hour(targetPeriod.startTime, targetPeriod.endTime)}
           </span>
         )}

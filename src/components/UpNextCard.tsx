@@ -12,9 +12,9 @@ interface UpNextCardProps {
 export function UpNextCard({ nextPeriod }: UpNextCardProps) {
   if (!nextPeriod) {
     return (
-      <div className="bg-white/80 dark:bg-zinc-950/70 border border-zinc-200 dark:border-zinc-800/80 rounded-xl p-3.5 flex items-center justify-between shadow-sm dark:shadow-none">
-        <div className="flex items-center gap-2.5 text-xs text-zinc-600 dark:text-zinc-400 font-mono">
-          <Clock className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+      <div className="bg-white dark:bg-zinc-950/70 border border-slate-200 dark:border-zinc-800/80 rounded-xl p-3.5 flex items-center justify-between shadow-sm dark:shadow-none">
+        <div className="flex items-center gap-2.5 text-xs text-slate-600 dark:text-zinc-400 font-mono">
+          <Clock className="w-4 h-4 text-slate-400 dark:text-zinc-500" />
           <span>No remaining classes scheduled for today</span>
         </div>
       </div>
@@ -26,8 +26,8 @@ export function UpNextCard({ nextPeriod }: UpNextCardProps) {
     : `PERIOD ${nextPeriod.periodIndex}`;
 
   return (
-    <div className="bg-white dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800/80 rounded-xl p-4 shadow-sm dark:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700/80 transition-all">
-      <div className="flex items-center justify-between text-xs font-mono text-zinc-600 dark:text-zinc-400 mb-1.5">
+    <div className="bg-white dark:bg-zinc-950/90 border border-slate-200 dark:border-zinc-800/80 rounded-xl p-4 shadow-sm dark:shadow-lg hover:border-slate-300 dark:hover:border-zinc-700/80 transition-all">
+      <div className="flex items-center justify-between text-xs font-mono text-slate-600 dark:text-zinc-400 mb-1.5">
         <div className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <span className="uppercase tracking-wider font-bold">UP NEXT • {periodLabel}</span>
