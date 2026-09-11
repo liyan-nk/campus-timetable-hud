@@ -8,6 +8,7 @@ import { UpNextCard } from '@/components/UpNextCard';
 import { TimetableGrid } from '@/components/TimetableGrid';
 import { TimeSimulator } from '@/components/TimeSimulator';
 import { AttendanceDrawer } from '@/components/AttendanceDrawer';
+import { AttendanceHistoryModal } from '@/components/AttendanceHistoryModal';
 import { BottomNav, NavTab } from '@/components/BottomNav';
 import { PWAInstallBanner } from '@/components/PWAInstallBanner';
 import { BASE_SCHEDULE } from '@/data/schedule';
@@ -31,6 +32,7 @@ function MobileHUDContent() {
   const [simulatedDate, setSimulatedDate] = useState<Date | null>(null);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState<boolean>(false);
   const [showGridModal, setShowGridModal] = useState<boolean>(false);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState<boolean>(false);
   const [overrides, setOverrides] = useState<PeriodOverrideData[]>([]);
   const [, setIsLoadingOverrides] = useState<boolean>(false);
 
@@ -104,7 +106,7 @@ function MobileHUDContent() {
     fetchAttendance();
   }, [fetchAttendance]);
 
-  // 1-Tap Attendance Toggle Handler
+  // 1-Tap Attendance Toggle Handler for Today
   const handleMarkAttendance = async (
     periodIndex: number,
     subjectCode: string,
@@ -160,12 +162,94 @@ function MobileHUDContent() {
     }
   };
 
+  // Leave Today Batch Action Handler
+  const handleLeaveToday = async () => {
+    if (!session.deviceUuid) return;
+    try {
+      const res = await fetch('/api/student/attendance/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          deviceUuid: session.deviceUuid,
+          date: currentDateStr,
+          action: 'MARK_ABSENT',
+        }),
+      });
+      if (res.ok) {
+        await fetchAttendance();
+      }
+    } catch (err) {
+      console.warn('Failed to mark leave today:', err);
+    }
+  };
+
+  // Reset Today Attendance Handler
+  const handleResetToday = async () => {
+    if (!session.deviceUuid) return;
+    try {
+      const res = await fetch('/api/student/attendance/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          deviceUuid: session.deviceUuid,
+          date: currentDateStr,
+          action: 'RESET',
+        }),
+      });
+      if (res.ok) {
+        await fetchAttendance();
+      }
+    } catch (err) {
+      console.warn('Failed to reset today attendance:', err);
+    }
+  };
+
+  // Retroactive Attendance Update for Past Dates
+  const handleMarkRetroactiveAttendance = async (
+    date: string,
+    periodIndex: number,
+    subjectCode: string,
+    status: AttendanceStatus,
+    periodIndices?: number[]
+  ) => {
+    if (!session.deviceUuid) return;
+
+    const indices = Array.isArray(periodIndices) && periodIndices.length > 0 ? periodIndices : [periodIndex];
+
+    try {
+      await fetch('/api/student/attendance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          deviceUuid: session.deviceUuid,
+          date,
+          periodIndex,
+          periodIndices: indices,
+          subjectCode,
+          status,
+        }),
+      });
+      await fetchAttendance();
+    } catch (err) {
+      console.warn('Failed to mark retroactive attendance:', err);
+    }
+  };
+
   // Resolve current time state
   const timeState: TimeResolverResult = resolveTimeState(
     currentDate,
     BASE_SCHEDULE,
     overrides
   );
+
+  const dayOfWeek = getDayOfWeekString(currentDate);
+
+  // Leave Today Active Status Calculation
+  const validDayPeriodsCount = BASE_SCHEDULE.filter(
+    (p) => p.day === dayOfWeek && p.periodIndex > 0 && p.subject !== 'LUNCH' && p.subject !== 'FREE'
+  ).length;
+  const todayAbsentCount = dayAttendanceRecords.filter((r) => r.status === 'ABSENT').length;
+  const isLeaveTodayActive = validDayPeriodsCount > 0 && todayAbsentCount >= validDayPeriodsCount;
 
   // Active period attendance lookup
   const activePeriodRecord = timeState.currentPeriod
@@ -194,8 +278,6 @@ function MobileHUDContent() {
     setSimulatedDate(null);
     setNow(new Date());
   };
-
-  const dayOfWeek = getDayOfWeekString(currentDate);
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 flex flex-col pb-safe selection:bg-emerald-500/30 transition-colors duration-200">
@@ -289,8 +371,23 @@ function MobileHUDContent() {
         {/* TAB 3: ATTENDANCE RUNWAY VIEW */}
         {activeTab === 'attendance' && (
           <div className="animate-in fade-in duration-200">
-            <AttendanceDrawer summary={attendanceSummary} />
+            <AttendanceDrawer
+              summary={attendanceSummary}
+              onLeaveToday={handleLeaveToday}
+              onResetToday={handleResetToday}
+              isLeaveTodayActive={isLeaveTodayActive}
+              onOpenHistoryModal={() => setIsHistoryModalOpen(true)}
+            />
           </div>
+        )}
+
+        {/* Attendance History Calendar Modal */}
+        {isHistoryModalOpen && (
+          <AttendanceHistoryModal
+            allRecords={attendanceRecords}
+            onMarkRetroactiveAttendance={handleMarkRetroactiveAttendance}
+            onClose={() => setIsHistoryModalOpen(false)}
+          />
         )}
 
         {/* Footer Meta */}
