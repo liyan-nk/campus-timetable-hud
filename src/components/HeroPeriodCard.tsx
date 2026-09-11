@@ -7,9 +7,11 @@ import { formatTo12Hour, formatRangeTo12Hour } from '@/lib/formatTime';
 
 interface HeroPeriodCardProps {
   timeState: TimeResolverResult;
+  currentAttendanceStatus?: 'PRESENT' | 'ABSENT' | 'DUTY_LEAVE' | null;
+  onMarkAttendance?: (periodIndex: number, subjectCode: string, status: 'PRESENT' | 'ABSENT' | 'DUTY_LEAVE') => void;
 }
 
-export function HeroPeriodCard({ timeState }: HeroPeriodCardProps) {
+export function HeroPeriodCard({ timeState, currentAttendanceStatus, onMarkAttendance }: HeroPeriodCardProps) {
   const { status, currentPeriod, nextPeriod, remainingSeconds, progressPercentage, displayMessage } =
     timeState;
 
@@ -138,6 +140,60 @@ export function HeroPeriodCard({ timeState }: HeroPeriodCardProps) {
               <span>{currentPeriod.overrideNote}</span>
             </div>
           )}
+
+          {/* 1-Tap Attendance Actions */}
+          <div className="pt-2 border-t border-slate-200 dark:border-zinc-800/60">
+            <div className="text-[10px] font-mono font-bold text-slate-500 dark:text-zinc-400 uppercase mb-1.5 flex items-center justify-between">
+              <span>RECORD ATTENDANCE</span>
+              {currentPeriod.overrideStatus === 'CANCELED' || currentPeriod.overrideStatus === 'FREE' ? (
+                <span className="text-amber-600 dark:text-amber-400">Class Canceled / Free</span>
+              ) : null}
+            </div>
+
+            {currentPeriod.overrideStatus === 'CANCELED' || currentPeriod.overrideStatus === 'FREE' ? (
+              <div className="p-2 rounded-lg bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-xs font-mono text-slate-500 dark:text-zinc-400 text-center">
+                Canceled / No Attendance Required
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => onMarkAttendance?.(currentPeriod.periodIndex, currentPeriod.code, 'PRESENT')}
+                  className={`py-1.5 px-2 rounded-lg text-xs font-mono font-bold transition-all border flex items-center justify-center gap-1 ${
+                    currentAttendanceStatus === 'PRESENT'
+                      ? 'bg-emerald-500 text-white border-emerald-600 shadow-md ring-2 ring-emerald-500/40'
+                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-700 dark:hover:text-emerald-400'
+                  }`}
+                >
+                  <span>✓</span>
+                  <span>Present</span>
+                </button>
+
+                <button
+                  onClick={() => onMarkAttendance?.(currentPeriod.periodIndex, currentPeriod.code, 'ABSENT')}
+                  className={`py-1.5 px-2 rounded-lg text-xs font-mono font-bold transition-all border flex items-center justify-center gap-1 ${
+                    currentAttendanceStatus === 'ABSENT'
+                      ? 'bg-rose-500 text-white border-rose-600 shadow-md ring-2 ring-rose-500/40'
+                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-700 dark:hover:text-rose-400'
+                  }`}
+                >
+                  <span>✕</span>
+                  <span>Absent</span>
+                </button>
+
+                <button
+                  onClick={() => onMarkAttendance?.(currentPeriod.periodIndex, currentPeriod.code, 'DUTY_LEAVE')}
+                  className={`py-1.5 px-2 rounded-lg text-xs font-mono font-bold transition-all border flex items-center justify-center gap-1 ${
+                    currentAttendanceStatus === 'DUTY_LEAVE'
+                      ? 'bg-amber-500 text-white border-amber-600 shadow-md ring-2 ring-amber-500/40'
+                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 hover:text-amber-700 dark:hover:text-amber-400'
+                  }`}
+                >
+                  <span>DL</span>
+                  <span>Duty Leave</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
