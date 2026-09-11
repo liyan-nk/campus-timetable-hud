@@ -5,10 +5,12 @@ import { MergedPeriod, TimeResolverResult } from '../types/schedule';
 import { MapPin, User, AlertTriangle, Clock } from 'lucide-react';
 import { formatTo12Hour, formatRangeTo12Hour } from '@/lib/formatTime';
 
+import { AttendanceStatus } from '@/types/attendance';
+
 interface HeroPeriodCardProps {
   timeState: TimeResolverResult;
-  currentAttendanceStatus?: 'PRESENT' | 'ABSENT' | 'DUTY_LEAVE' | null;
-  onMarkAttendance?: (periodIndex: number, subjectCode: string, status: 'PRESENT' | 'ABSENT' | 'DUTY_LEAVE') => void;
+  currentAttendanceStatus?: AttendanceStatus | null;
+  onMarkAttendance?: (periodIndex: number, subjectCode: string, status: AttendanceStatus) => void;
 }
 
 export function HeroPeriodCard({ timeState, currentAttendanceStatus, onMarkAttendance }: HeroPeriodCardProps) {
