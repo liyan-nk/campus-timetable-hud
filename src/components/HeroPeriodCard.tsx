@@ -157,7 +157,7 @@ export function HeroPeriodCard({ timeState, currentAttendanceStatus, onMarkAtten
                 Canceled / No Attendance Required
               </div>
             ) : (
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => onMarkAttendance?.(currentPeriod.periodIndex, currentPeriod.code, 'PRESENT')}
                   className={`py-1.5 px-2 rounded-lg text-xs font-mono font-bold transition-all border flex items-center justify-center gap-1 ${
@@ -180,18 +180,6 @@ export function HeroPeriodCard({ timeState, currentAttendanceStatus, onMarkAtten
                 >
                   <span>✕</span>
                   <span>Absent</span>
-                </button>
-
-                <button
-                  onClick={() => onMarkAttendance?.(currentPeriod.periodIndex, currentPeriod.code, 'DUTY_LEAVE')}
-                  className={`py-1.5 px-2 rounded-lg text-xs font-mono font-bold transition-all border flex items-center justify-center gap-1 ${
-                    currentAttendanceStatus === 'DUTY_LEAVE'
-                      ? 'bg-amber-500 text-white border-amber-600 shadow-md ring-2 ring-amber-500/40'
-                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 hover:text-amber-700 dark:hover:text-amber-400'
-                  }`}
-                >
-                  <span>DL</span>
-                  <span>Duty Leave</span>
                 </button>
               </div>
             )}

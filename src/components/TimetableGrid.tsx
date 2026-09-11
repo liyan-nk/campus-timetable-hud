@@ -204,8 +204,8 @@ export function TimetableGrid({
                 </p>
               )}
 
-              {/* Inline Attendance Toggles */}
-              {onMarkAttendance && (
+              {/* Inline Attendance Toggles (Today Only Guardrail) */}
+              {onMarkAttendance && selectedDay === currentDay && (
                 <div className="mt-2.5 pt-2 border-t border-slate-200 dark:border-zinc-800/60 flex items-center justify-between gap-2">
                   <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400 uppercase font-semibold">
                     Attendance:
@@ -226,9 +226,9 @@ export function TimetableGrid({
                           <>
                             <button
                               onClick={() => onMarkAttendance(p.periodIndex, p.code, 'PRESENT', periodIndices)}
-                              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all border ${
+                              className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold transition-all border ${
                                 status === 'PRESENT'
-                                  ? 'bg-emerald-500 text-white border-emerald-600 ring-1 ring-emerald-500/50'
+                                  ? 'bg-emerald-500 text-white border-emerald-600 ring-1 ring-emerald-500/50 shadow-sm'
                                   : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:text-emerald-400'
                               }`}
                             >
@@ -236,23 +236,13 @@ export function TimetableGrid({
                             </button>
                             <button
                               onClick={() => onMarkAttendance(p.periodIndex, p.code, 'ABSENT', periodIndices)}
-                              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all border ${
+                              className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold transition-all border ${
                                 status === 'ABSENT'
-                                  ? 'bg-rose-500 text-white border-rose-600 ring-1 ring-rose-500/50'
+                                  ? 'bg-rose-500 text-white border-rose-600 ring-1 ring-rose-500/50 shadow-sm'
                                   : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:bg-rose-50 hover:text-rose-700 dark:hover:text-rose-400'
                               }`}
                             >
                               ✕ Absent
-                            </button>
-                            <button
-                              onClick={() => onMarkAttendance(p.periodIndex, p.code, 'DUTY_LEAVE', periodIndices)}
-                              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all border ${
-                                status === 'DUTY_LEAVE'
-                                  ? 'bg-amber-500 text-white border-amber-600 ring-1 ring-amber-500/50'
-                                  : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:bg-amber-50 hover:text-amber-700 dark:hover:text-amber-400'
-                              }`}
-                            >
-                              DL
                             </button>
                           </>
                         );
