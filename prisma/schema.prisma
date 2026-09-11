@@ -21,3 +21,30 @@ model PeriodOverride {
   @@unique([date, periodIndex])
   @@index([date])
 }
+
+model StudentProfile {
+  id           String             @id @default(uuid())
+  deviceUuid   String             @unique
+  userId       String?            @unique // Reserved for future Clerk/NextAuth migration
+  labGroup     String             @default("G1") // "G1" or "G2"
+  createdAt    DateTime           @default(now())
+  records      AttendanceRecord[]
+
+  @@index([deviceUuid])
+}
+
+model AttendanceRecord {
+  id          String         @id @default(uuid())
+  studentId   String
+  student     StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date        DateTime       @db.Date
+  periodIndex Int            // 1 to 7
+  subjectCode String
+  status      String         // 'PRESENT' | 'ABSENT' | 'DUTY_LEAVE' | 'OFF'
+  createdAt   DateTime       @default(now())
+
+  @@unique([studentId, date, periodIndex])
+  @@index([studentId, subjectCode])
+  @@index([studentId, date])
+}
+
