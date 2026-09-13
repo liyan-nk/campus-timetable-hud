@@ -62,3 +62,23 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// Push Event Listener for Web Push Notifications
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : {};
+  const title = data.title || 'Schedule Alert';
+  const options = {
+    body: data.body || 'New timetable update announced.',
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-192.png',
+    vibrate: [150, 50, 150],
+    data: { url: data.url || '/' }
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Notification Click Event Listener
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(clients.openWindow(event.notification.data.url || '/'));
+});
