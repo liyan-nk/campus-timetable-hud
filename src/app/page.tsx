@@ -9,6 +9,7 @@ import { TimetableGrid } from '@/components/TimetableGrid';
 import { TimeSimulator } from '@/components/TimeSimulator';
 import { AttendanceDrawer } from '@/components/AttendanceDrawer';
 import { AttendanceHistoryModal } from '@/components/AttendanceHistoryModal';
+import { NotificationBanner } from '@/components/NotificationBanner';
 import { BottomNav, NavTab } from '@/components/BottomNav';
 import { PWAInstallBanner } from '@/components/PWAInstallBanner';
 import { BASE_SCHEDULE } from '@/data/schedule';
@@ -298,6 +299,9 @@ function MobileHUDContent() {
 
       {/* Main Content Area with Bottom Nav padding offset */}
       <main className="flex-1 max-w-md w-full mx-auto p-4 pb-24 space-y-4">
+        {/* Persistent Web Push Notification Permission Banner */}
+        <NotificationBanner />
+
         {/* Time Simulator Panel (Expandable) */}
         {showSimulator && isSimulatorOpen && (
           <TimeSimulator
