@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DayOfWeek, PeriodOverrideData } from '../types/schedule';
+import { DayOfWeek, LabGroup, PeriodOverrideData } from '../types/schedule';
 import { BASE_SCHEDULE } from '../data/schedule';
 import { mergePeriodWithOverride, parseHHMMToMinutes } from '../lib/timeResolver';
 import { Calendar, MapPin, User, AlertCircle, X, Coffee, Utensils } from 'lucide-react';
@@ -14,6 +14,7 @@ interface TimetableGridProps {
   activePeriodIndex: number | null;
   overrides: PeriodOverrideData[];
   attendanceRecords?: AttendanceRecordItem[];
+  labGroup?: LabGroup;
   onMarkAttendance?: (
     periodIndex: number,
     subjectCode: string,
@@ -36,6 +37,7 @@ export function TimetableGrid({
   activePeriodIndex,
   overrides,
   attendanceRecords = [],
+  labGroup = 'G1',
   onMarkAttendance,
   onClose,
 }: TimetableGridProps) {
@@ -95,7 +97,7 @@ export function TimetableGrid({
       {/* Schedule List for Selected Day */}
       <div className="space-y-2.5">
         {dayPeriods.map((p) => {
-          const merged = mergePeriodWithOverride(p, overrides);
+          const merged = mergePeriodWithOverride(p, overrides, labGroup);
           const isActive =
             currentDay === selectedDay &&
             activePeriodIndex !== null &&
@@ -173,9 +175,14 @@ export function TimetableGrid({
                       isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-zinc-600 dark:text-zinc-400'
                     }`}
                   >
-                    {periodLabel} • {p.code}
+                    {periodLabel} • {merged.code}
                   </span>
                   {statusBadge}
+                  {merged.activeLabGroup && (
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                      ● BATCH {merged.activeLabGroup}
+                    </span>
+                  )}
                 </div>
                 <span className="text-zinc-500 dark:text-zinc-400">
                   {formatRangeTo12Hour(p.startTime, p.endTime)}
@@ -225,7 +232,7 @@ export function TimetableGrid({
                         return (
                           <>
                             <button
-                              onClick={() => onMarkAttendance(p.periodIndex, p.code, 'PRESENT', periodIndices)}
+                              onClick={() => onMarkAttendance(p.periodIndex, merged.code, 'PRESENT', periodIndices)}
                               className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold transition-all border ${
                                 status === 'PRESENT'
                                   ? 'bg-emerald-500 text-white border-emerald-600 ring-1 ring-emerald-500/50 shadow-sm'
@@ -235,7 +242,7 @@ export function TimetableGrid({
                               ✓ Present
                             </button>
                             <button
-                              onClick={() => onMarkAttendance(p.periodIndex, p.code, 'ABSENT', periodIndices)}
+                              onClick={() => onMarkAttendance(p.periodIndex, merged.code, 'ABSENT', periodIndices)}
                               className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold transition-all border ${
                                 status === 'ABSENT'
                                   ? 'bg-rose-500 text-white border-rose-600 ring-1 ring-rose-500/50 shadow-sm'
@@ -258,4 +265,3 @@ export function TimetableGrid({
     </div>
   );
 }
-

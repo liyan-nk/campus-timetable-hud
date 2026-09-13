@@ -134,6 +134,12 @@ export function HeroPeriodCard({ timeState, currentAttendanceStatus, onMarkAtten
               <MapPin className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               <span className="font-bold text-xs text-emerald-800 dark:text-emerald-300">{currentPeriod.venue}</span>
             </div>
+            {currentPeriod.activeLabGroup && (
+              <div className="flex items-center gap-1 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded-lg text-xs font-mono font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>● BATCH {currentPeriod.activeLabGroup}</span>
+              </div>
+            )}
           </div>
 
           {currentPeriod.overrideNote && (

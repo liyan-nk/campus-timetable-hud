@@ -17,6 +17,7 @@ import { PeriodOverrideData, TimeResolverResult } from '@/types/schedule';
 import { AttendanceRecordItem, AttendanceStatus, AttendanceSummaryResult } from '@/types/attendance';
 import { calculateAttendanceSummary } from '@/lib/attendanceEngine';
 import { useStudentSession } from '@/hooks/useStudentSession';
+import { useLabGroup } from '@/hooks/useLabGroup';
 import { Calendar, ChevronDown, ChevronUp, Layers } from 'lucide-react';
 
 function MobileHUDContent() {
@@ -26,6 +27,7 @@ function MobileHUDContent() {
   const showSimulator = isDev || isPreview;
 
   const session = useStudentSession();
+  const { labGroup, setLabGroup } = useLabGroup(session.deviceUuid);
 
   const [activeTab, setActiveTab] = useState<NavTab>('hud');
   const [now, setNow] = useState<Date>(new Date());
@@ -235,11 +237,12 @@ function MobileHUDContent() {
     }
   };
 
-  // Resolve current time state
+  // Resolve current time state filtered by active labGroup
   const timeState: TimeResolverResult = resolveTimeState(
     currentDate,
     BASE_SCHEDULE,
-    overrides
+    overrides,
+    labGroup
   );
 
   const dayOfWeek = getDayOfWeekString(currentDate);
@@ -289,6 +292,8 @@ function MobileHUDContent() {
         onToggleSimulator={() => setIsSimulatorOpen((prev) => !prev)}
         isSimulatorOpen={isSimulatorOpen}
         showSimulator={showSimulator}
+        labGroup={labGroup}
+        onSelectLabGroup={setLabGroup}
       />
 
       {/* Main Content Area with Bottom Nav padding offset */}
@@ -347,6 +352,7 @@ function MobileHUDContent() {
                   activePeriodIndex={timeState.currentPeriod?.periodIndex || null}
                   overrides={overrides}
                   attendanceRecords={dayAttendanceRecords}
+                  labGroup={labGroup}
                   onMarkAttendance={handleMarkAttendance}
                   onClose={() => setShowGridModal(false)}
                 />
@@ -363,6 +369,7 @@ function MobileHUDContent() {
               activePeriodIndex={timeState.currentPeriod?.periodIndex || null}
               overrides={overrides}
               attendanceRecords={dayAttendanceRecords}
+              labGroup={labGroup}
               onMarkAttendance={handleMarkAttendance}
             />
           </div>
