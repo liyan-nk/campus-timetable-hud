@@ -13,6 +13,8 @@ import {
   ArrowLeft,
   RefreshCw,
   Save,
+  Send,
+  BellRing,
 } from 'lucide-react';
 
 export default function CRAdminPage() {
@@ -27,6 +29,11 @@ export default function CRAdminPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [savingIndex, setSavingIndex] = useState<number | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Broadcast Message State
+  const [broadcastTitle, setBroadcastTitle] = useState<string>('📢 CR Broadcast Alert');
+  const [broadcastMessage, setBroadcastMessage] = useState<string>('');
+  const [isSendingBroadcast, setIsSendingBroadcast] = useState<boolean>(false);
 
   // Form states per period index (1 to 7)
   const [formStates, setFormStates] = useState<{
@@ -166,12 +173,53 @@ export default function CRAdminPage() {
         throw new Error(data.error || 'Failed to update');
       }
 
-      setMessage({ type: 'success', text: `Period ${periodIndex} override saved successfully!` });
+      setMessage({ type: 'success', text: `Period ${periodIndex} override saved & broadcasted!` });
       await fetchOverrides();
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Error saving override' });
     } finally {
       setSavingIndex(null);
+    }
+  };
+
+  const handleSendBroadcast = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!broadcastMessage.trim()) return;
+
+    try {
+      setIsSendingBroadcast(true);
+      setMessage(null);
+
+      const res = await fetch('/api/push/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          passkey,
+          title: broadcastTitle,
+          message: broadcastMessage,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          setIsAuthenticated(false);
+          setAuthError('Invalid CR Passkey');
+          return;
+        }
+        throw new Error(data.error || 'Failed to send broadcast');
+      }
+
+      setMessage({
+        type: 'success',
+        text: `Custom Push Notification Broadcasted! (${data.stats?.sent || 0} subscriptions notified)`,
+      });
+      setBroadcastMessage('');
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message || 'Error sending broadcast' });
+    } finally {
+      setIsSendingBroadcast(false);
     }
   };
 
@@ -295,6 +343,51 @@ export default function CRAdminPage() {
             <span>{message.text}</span>
           </div>
         )}
+
+        {/* Quick Broadcast Alert Panel */}
+        <div className="bg-white dark:bg-zinc-950 border border-emerald-200 dark:border-emerald-800/80 rounded-2xl p-4 space-y-3 shadow-md">
+          <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-mono font-bold text-xs uppercase">
+            <BellRing className="w-4 h-4 shrink-0" />
+            <span>QUICK BROADCAST ALERT</span>
+          </div>
+
+          <form onSubmit={handleSendBroadcast} className="space-y-3">
+            <div>
+              <label className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 block mb-1">
+                ALERT TITLE
+              </label>
+              <input
+                type="text"
+                value={broadcastTitle}
+                onChange={(e) => setBroadcastTitle(e.target.value)}
+                placeholder="Title e.g. Sports Day Announcement"
+                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 block mb-1">
+                CUSTOM ANNOUNCEMENT MESSAGE
+              </label>
+              <textarea
+                rows={2}
+                value={broadcastMessage}
+                onChange={(e) => setBroadcastMessage(e.target.value)}
+                placeholder="e.g. Sports day practice moved to seminar hall. Bring records for verification."
+                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg p-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-emerald-500 font-sans leading-relaxed"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSendingBroadcast || !broadcastMessage.trim()}
+              className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-mono text-xs font-bold py-2 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>{isSendingBroadcast ? 'BROADCASTING...' : 'SEND PUSH TO ALL STUDENTS'}</span>
+            </button>
+          </form>
+        </div>
 
         {/* List of Periods for Target Day */}
         <div className="space-y-4">
@@ -456,4 +549,3 @@ export default function CRAdminPage() {
     </div>
   );
 }
-
