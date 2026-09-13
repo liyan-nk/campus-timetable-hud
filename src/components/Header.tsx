@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Wifi, WifiOff, Sliders, RefreshCw, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/components/ThemeProvider';
+import { LabGroup } from '@/types/schedule';
 
 interface HeaderProps {
   simulatedDate: Date;
@@ -12,6 +13,8 @@ interface HeaderProps {
   onToggleSimulator: () => void;
   isSimulatorOpen: boolean;
   showSimulator?: boolean;
+  labGroup?: LabGroup;
+  onSelectLabGroup?: (group: LabGroup) => void;
 }
 
 export function Header({
@@ -21,6 +24,8 @@ export function Header({
   onToggleSimulator,
   isSimulatorOpen,
   showSimulator = false,
+  labGroup = 'G1',
+  onSelectLabGroup,
 }: HeaderProps) {
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const { theme, toggleTheme } = useTheme();
@@ -76,8 +81,36 @@ export function Header({
           </p>
         </div>
 
-        {/* Right: Actions */}
-        <div className="flex items-center gap-2">
+        {/* Right: Actions & Lab Group Toggle */}
+        <div className="flex items-center gap-1.5">
+          {/* G1 / G2 Segmented Control Pill */}
+          {onSelectLabGroup && (
+            <div className="flex items-center p-0.5 rounded-lg border bg-slate-100 dark:bg-zinc-900 border-slate-300 dark:border-zinc-800 text-[11px] font-mono font-bold">
+              <button
+                onClick={() => onSelectLabGroup('G1')}
+                className={`px-2 py-0.5 rounded-md transition-all ${
+                  labGroup === 'G1'
+                    ? 'bg-white text-emerald-700 font-semibold shadow-sm dark:bg-zinc-800 dark:text-emerald-400'
+                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
+                }`}
+                title="Select Batch G1 Labs"
+              >
+                G1
+              </button>
+              <button
+                onClick={() => onSelectLabGroup('G2')}
+                className={`px-2 py-0.5 rounded-md transition-all ${
+                  labGroup === 'G2'
+                    ? 'bg-white text-emerald-700 font-semibold shadow-sm dark:bg-zinc-800 dark:text-emerald-400'
+                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
+                }`}
+                title="Select Batch G2 Labs"
+              >
+                G2
+              </button>
+            </div>
+          )}
+
           {/* Network status indicator */}
           <div
             className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-mono border ${
@@ -144,5 +177,3 @@ export function Header({
     </header>
   );
 }
-
-
