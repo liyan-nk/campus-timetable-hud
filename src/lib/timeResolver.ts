@@ -1,5 +1,6 @@
 import {
   DayOfWeek,
+  LabGroup,
   MergedPeriod,
   PeriodDefinition,
   PeriodOverrideData,
@@ -38,38 +39,83 @@ export function getDayOfWeekString(date: Date): DayOfWeek | 'SAT' | 'SUN' {
   }
 }
 
+export function filterPeriodForLabGroup(
+  period: PeriodDefinition,
+  labGroup: LabGroup = 'G1'
+): PeriodDefinition {
+  if (period.groups && period.groups[labGroup]) {
+    const groupInfo = period.groups[labGroup]!;
+    return {
+      ...period,
+      subject: groupInfo.subject,
+      code: groupInfo.code,
+      faculty: groupInfo.faculty,
+      venue: groupInfo.venue,
+    };
+  }
+
+  // String fallback if groups object is not present
+  if (period.subject.includes('G1:') && period.subject.includes('G2:')) {
+    const parts = period.subject.split('/');
+    const match = parts.find((p) => p.includes(`${labGroup}:`));
+    if (match) {
+      return {
+        ...period,
+        subject: match.replace(`${labGroup}:`, '').trim(),
+      };
+    }
+  }
+
+  return period;
+}
+
 export function mergePeriodWithOverride(
   period: PeriodDefinition,
-  overrides: PeriodOverrideData[]
+  overrides: PeriodOverrideData[],
+  labGroup: LabGroup = 'G1'
 ): MergedPeriod {
+  const filtered = filterPeriodForLabGroup(period, labGroup);
+  const isLab = period.type === 'LAB' || !!period.groups;
+
   if (period.periodIndex === 0) {
-    return { ...period, overrideStatus: 'NORMAL', isOverridden: false };
+    return {
+      ...filtered,
+      overrideStatus: 'NORMAL',
+      isOverridden: false,
+      activeLabGroup: isLab ? labGroup : undefined,
+    };
   }
 
   const override = overrides.find((o) => o.periodIndex === period.periodIndex);
   if (!override || override.status === 'NORMAL') {
-    return { ...period, overrideStatus: 'NORMAL', isOverridden: false };
+    return {
+      ...filtered,
+      overrideStatus: 'NORMAL',
+      isOverridden: false,
+      activeLabGroup: isLab ? labGroup : undefined,
+    };
   }
 
   let merged: MergedPeriod = {
-    ...period,
+    ...filtered,
     overrideStatus: override.status,
     overrideNote: override.note || null,
     isOverridden: true,
+    activeLabGroup: isLab ? labGroup : undefined,
   };
 
   if (override.status === 'FREE') {
-    merged.subject = `FREE HOUR (${period.subject})`;
+    merged.subject = `FREE HOUR (${filtered.subject})`;
     merged.faculty = 'Unassigned';
-    merged.venue = period.venue;
+    merged.venue = filtered.venue;
   } else if (override.status === 'CANCELED') {
-    merged.subject = `[CANCELED] ${period.subject}`;
-    merged.faculty = override.overrideFaculty || period.faculty;
-    merged.venue = period.venue;
+    merged.subject = `[CANCELED] ${filtered.subject}`;
+    merged.faculty = override.overrideFaculty || filtered.faculty;
+    merged.venue = filtered.venue;
   } else if (override.status === 'SWAPPED') {
-    merged.subject = override.overrideSubject || period.subject;
-    merged.faculty = override.overrideFaculty || period.faculty;
-    merged.venue = override.overrideVenue || period.venue;
+    merged.subject = override.overrideSubject || filtered.subject;
+    merged.faculty = override.overrideFaculty || filtered.faculty;
+    merged.venue = override.overrideVenue || filtered.venue;
   }
 
   return merged;
@@ -78,7 +124,8 @@ export function mergePeriodWithOverride(
 export function resolveTimeState(
   now: Date,
   allPeriods: PeriodDefinition[],
-  overrides: PeriodOverrideData[] = []
+  overrides: PeriodOverrideData[] = [],
+  labGroup: LabGroup = 'G1'
 ): TimeResolverResult {
   const dayStr = getDayOfWeekString(now);
 
@@ -111,7 +158,7 @@ export function resolveTimeState(
   }
 
   const mergedTodaySlots = todaySlots.map((p) =>
-    mergePeriodWithOverride(p, overrides)
+    mergePeriodWithOverride(p, overrides, labGroup)
   );
 
   // Academic periods for today (excluding breaks & lunch)
@@ -147,7 +194,7 @@ export function resolveTimeState(
     };
   }
 
-  // 2. COLLEGE OVER (Specifically after 16:00 on Friday or end of last period)
+  // 2. COLLEGE OVER
   if (nowSec >= collegeEndSec) {
     return {
       status: 'COLLEGE_OVER',

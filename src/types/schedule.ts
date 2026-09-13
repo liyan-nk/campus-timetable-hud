@@ -1,11 +1,19 @@
 export type DayOfWeek = 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI';
 export type PeriodType = 'LECTURE' | 'LAB' | 'BREAK' | 'LUNCH';
 export type OverrideStatus = 'NORMAL' | 'CANCELED' | 'SWAPPED' | 'FREE';
+export type LabGroup = 'G1' | 'G2';
+
+export interface BatchLabInfo {
+  subject: string;
+  code: string;
+  faculty: string;
+  venue: string;
+}
 
 export interface PeriodDefinition {
   id: string;
   day: DayOfWeek;
-  periodIndex: number; // 1 to 6
+  periodIndex: number; // 1 to 7
   startTime: string;   // '09:00' (24h HH:mm)
   endTime: string;     // '09:55'
   subject: string;
@@ -13,6 +21,10 @@ export interface PeriodDefinition {
   faculty: string;
   venue: string;       // e.g. 'Room 304' or 'CS Lab 2'
   type: PeriodType;
+  groups?: {
+    G1?: BatchLabInfo;
+    G2?: BatchLabInfo;
+  };
 }
 
 export interface PeriodOverrideData {
@@ -38,6 +50,7 @@ export interface MergedPeriod extends PeriodDefinition {
   overrideStatus?: OverrideStatus;
   overrideNote?: string | null;
   isOverridden?: boolean;
+  activeLabGroup?: LabGroup;
 }
 
 export interface TimeResolverResult {

@@ -81,7 +81,21 @@
     "code": "PCCSL307 / PCCSL308",
     "faculty": "G1: CSLL, CSST / G2: Jaseena T (ECJS)",
     "venue": "G1: DS Lab / G2: Digital Lab",
-    "type": "LAB"
+    "type": "LAB",
+    "groups": {
+      "G1": {
+        "subject": "Data Structures Lab",
+        "code": "PCCSL307",
+        "faculty": "CSLL, CSST",
+        "venue": "DS Lab"
+      },
+      "G2": {
+        "subject": "Digital Lab",
+        "code": "PCCSL308",
+        "faculty": "Jaseena T (ECJS)",
+        "venue": "Digital Lab"
+      }
+    }
   },
   {
     "id": "mon-tea-2",
@@ -105,7 +119,21 @@
     "code": "PCCSL307 / PCCSL308",
     "faculty": "G1: CSLL, CSST / G2: Jaseena T (ECJS)",
     "venue": "G1: DS Lab / G2: Digital Lab",
-    "type": "LAB"
+    "type": "LAB",
+    "groups": {
+      "G1": {
+        "subject": "Data Structures Lab",
+        "code": "PCCSL307",
+        "faculty": "CSLL, CSST",
+        "venue": "DS Lab"
+      },
+      "G2": {
+        "subject": "Digital Lab",
+        "code": "PCCSL308",
+        "faculty": "Jaseena T (ECJS)",
+        "venue": "Digital Lab"
+      }
+    }
   },
 
   {
@@ -311,7 +339,21 @@
     "code": "PCCSL308 / PCCSL307",
     "faculty": "G1: Jaseena T (ECJS) / G2: CSLL, CSST",
     "venue": "G1: Digital Lab / G2: DS Lab",
-    "type": "LAB"
+    "type": "LAB",
+    "groups": {
+      "G1": {
+        "subject": "Digital Lab",
+        "code": "PCCSL308",
+        "faculty": "Jaseena T (ECJS)",
+        "venue": "Digital Lab"
+      },
+      "G2": {
+        "subject": "Data Structures Lab",
+        "code": "PCCSL307",
+        "faculty": "CSLL, CSST",
+        "venue": "DS Lab"
+      }
+    }
   },
   {
     "id": "wed-tea-2",
@@ -335,7 +377,21 @@
     "code": "PCCSL308 / PCCSL307",
     "faculty": "G1: Jaseena T (ECJS) / G2: CSLL, CSST",
     "venue": "G1: Digital Lab / G2: DS Lab",
-    "type": "LAB"
+    "type": "LAB",
+    "groups": {
+      "G1": {
+        "subject": "Digital Lab",
+        "code": "PCCSL308",
+        "faculty": "Jaseena T (ECJS)",
+        "venue": "Digital Lab"
+      },
+      "G2": {
+        "subject": "Data Structures Lab",
+        "code": "PCCSL307",
+        "faculty": "CSLL, CSST",
+        "venue": "DS Lab"
+      }
+    }
   },
 
   {
