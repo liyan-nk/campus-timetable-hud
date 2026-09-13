@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sendBroadcastNotification } from '@/lib/pushNotifier';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,6 +64,14 @@ export async function POST(request: NextRequest) {
           periodIndex: Number(periodIndex),
         },
       });
+
+      // Dispatch reset push notification
+      sendBroadcastNotification(
+        `🗓️ Timetable Update (${date})`,
+        `Period ${periodIndex} override reset back to NORMAL.`,
+        '/'
+      ).catch((err) => console.warn('Push dispatch error:', err));
+
       return NextResponse.json({ success: true, message: 'Override reset to NORMAL' });
     }
 
@@ -91,6 +100,24 @@ export async function POST(request: NextRequest) {
         note: note || null,
       },
     });
+
+    // Dispatch automated Web Push broadcast alert
+    let alertBody = `Period ${periodIndex} status updated to ${status}.`;
+    if (status === 'CANCELED') {
+      alertBody = `⚠️ Period ${periodIndex} has been CANCELED.`;
+    } else if (status === 'FREE') {
+      alertBody = `🎉 Period ${periodIndex} marked as FREE HOUR.`;
+    } else if (status === 'SWAPPED') {
+      alertBody = `🔄 Period ${periodIndex} SWAPPED to ${overrideSubject || 'new class'} in ${overrideVenue || 'new venue'}.`;
+    }
+
+    if (note) {
+      alertBody += ` (${note})`;
+    }
+
+    sendBroadcastNotification(`📢 Schedule Alert (${date})`, alertBody, '/').catch((err) =>
+      console.warn('Push dispatch error on override:', err)
+    );
 
     return NextResponse.json({ success: true, override: result });
   } catch (error) {
